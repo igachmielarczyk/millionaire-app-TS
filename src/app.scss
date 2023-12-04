@@ -1,0 +1,160 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Roboto", sans-serif;
+  font-size: 18px;
+}
+
+.app {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  background-color: #020230;
+  color: #fff;
+  .main {
+    width: 75vw;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0), #020230),
+      url("https://i.ytimg.com/vi/yQbJRGs0fy8/maxresdefault.jpg") center
+        no-repeat;
+    background-size: cover;
+    display: flex;
+    flex-direction: column;
+    .top {
+      flex: 1;
+      position: relative;
+      .timer {
+        position: absolute;
+        bottom: 2%;
+        left: 5%;
+        font-size: 1.875rem;
+        width: 100px;
+        height: 100px;
+        border: 5px solid white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+    .bottom {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      .trivia {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: 100%;
+        width: 80%;
+        margin-top: 10vh;
+
+        .question {
+          padding: 30px 20px;
+          text-align: center;
+          border: 1px solid white;
+          border-radius: 5px;
+          background: linear-gradient(#100241, black);
+          width: 100%;
+          font-size: 1.25rem;
+          margin-bottom: 100px;
+        }
+        .answers {
+          width: 100%;
+          display: grid;
+          grid-template: 1fr 1fr/ 1fr 1fr;
+          gap: 20px;
+          .answer {
+            border-radius: 15px;
+            font-weight: 300;
+            background: linear-gradient(#0e0124, #22074d);
+            padding: 20px;
+            text-align: center;
+            border: 1px solid white;
+            transition: all .3s linear;
+            &:hover {
+              background: mediumblue;
+            }
+            &.active {
+              background: mediumblue;
+            }
+            &.correct {
+              animation: correct 3s ease forwards;
+            }
+            &.wrong {
+              animation: wrong 3s ease forwards;
+            }
+          }
+        }
+      }
+    }
+  }
+  .pyramid {
+    width: 25vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .moneyList {
+    padding: 20px 70px;
+    list-style: none;
+    width: 100%;
+    .moneyListItem {
+      display: flex;
+      align-items: center;
+      padding: 5px;
+      border-radius: 5px;
+      margin-bottom: 15px;
+      clip-path: polygon(5% 0%, 95% 0%, 100% 50%, 95% 100%, 5% 100%, 0% 50%);
+      &.active {
+        background-color: teal;
+      }
+      .moneyListItemNumber {
+        flex: 1;
+        font-weight: 100;
+        margin-right: 20px;
+        text-align: center;
+      }
+      .moneyListItemAmount {
+        font-size: 1.125rem;
+        font-weight: 400;
+        flex: 3;
+        text-align: center;
+      }
+    }
+  }
+}
+
+@keyframes correct {
+  0%,
+  22%,
+  42% {
+    background: mediumblue;
+  }
+  20%,
+  40%,
+  60% {
+    background: linear-gradient(#0e0124, #22074d);
+  }
+  62%,
+  100% {
+    background: green;
+  }
+}
+
+@keyframes wrong {
+  0%,
+  22%,
+  42% {
+    background: mediumblue;
+  }
+  20%,
+  40%,
+  60% {
+    background: linear-gradient(#0e0124, #22074d);
+  }
+  62%,
+  100% {
+    background: crimson;
+  }
+}
