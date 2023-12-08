@@ -45,7 +45,6 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        height: 100%;
         width: 80%;
         margin-top: 10vh;
 
@@ -71,7 +70,8 @@
             padding: 20px;
             text-align: center;
             border: 1px solid white;
-            transition: all .3s linear;
+            transition: all 0.3s linear;
+            cursor: pointer;
             &:hover {
               background: mediumblue;
             }
@@ -88,17 +88,69 @@
         }
       }
     }
+    .loss {
+      position: relative;
+      margin: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      h1 {
+        font-size: 3rem;
+        margin-bottom: 20px;
+      }
+      .startAgain {
+        width: 200px;
+        height: 40px;
+        border: none;
+        border-radius: 5px;
+        background: white;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: all 0.3s linear;
+        &:hover {
+          background-color: green;
+          color: white;
+        }
+      }
+    }
   }
   .pyramid {
     width: 25vw;
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-direction: column;
+    .lifebuoys {
+      display: flex;
+      align-items: center;
+      column-gap: 5px;
+      .wheel {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid white;
+        width: 90px;
+        height: 50px;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: all .3s linear;
+        &:hover {
+          border: 1px solid teal;
+          background-color: teal;
+        }
+      }
+    }
   }
   .moneyList {
     padding: 20px 70px;
     list-style: none;
     width: 100%;
+    h2 {
+      text-transform: uppercase;
+      margin-bottom: 50px;
+      text-align: center;
+      font-size: 1.5rem;
+    }
     .moneyListItem {
       display: flex;
       align-items: center;
@@ -156,5 +208,234 @@
   62%,
   100% {
     background: crimson;
+  }
+}
+
+.start {
+  width: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin: auto;
+  .startInput {
+    width: 100%;
+    height: 40px;
+    border: none;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 18px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    &:focus {
+      outline: none;
+    }
+  }
+  .startButton {
+    width: 100%;
+    height: 40px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 500;
+    transition: all 0.3s linear;
+    &:hover {
+      background-color: green;
+      color: white;
+    }
+  }
+}
+
+.mute {
+  z-index: 2;
+  position: absolute;
+  top: 3%;
+  left: 3%;
+  border: 2px solid white;
+  border-radius: 50%;
+  padding: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  svg {
+    font-size: 3rem;
+  }
+}
+
+//Variables - dla media query
+$xs: 0;
+$sm: 575.98px;
+$md: 767.98px;
+$lg: 991.98px;
+$xl: 1199.98px;
+$xxl: 1399.98px;
+$x2: 1720px;
+
+/*RWD*/
+//1720
+@media only screen and (max-width: $x2) {
+  .app {
+    .main {
+      .bottom {
+        .trivia {
+          margin-top: 3vh;
+          .question {
+            margin-bottom: 50px;
+          }
+        }
+      }
+    }
+  }
+}
+//1400
+@media only screen and (max-width: $xxl) {
+  .mute {
+    padding: 0.5rem;
+    svg {
+      font-size: 2rem;
+    }
+  }
+  .app {
+    .main {
+      .top {
+        .timer {
+          left: 3%;
+          font-size: 1.2rem;
+          width: 75px;
+          height: 75px;
+          border: 2px solid white;
+        }
+      }
+      .bottom {
+        .trivia {
+          .question {
+            padding: 20px 10px;
+            font-size: 1.125rem;
+          }
+        }
+      }
+    }
+    .moneyList {
+      .moneyListItem {
+        margin-bottom: 10px;
+        .moneyListItemAmount {
+          font-size: 1rem;
+        }
+      }
+      h2 {
+        margin-bottom: 25px;
+        font-size: 1.25rem;
+      }
+    }
+  }
+}
+
+//1200px
+@media only screen and (max-width: $xl) {
+  .app {
+    .main {
+      .bottom {
+        .trivia {
+          width: 95%;
+        }
+      }
+    }
+    .moneyList {
+      padding: 20px 20px;
+    }
+  }
+}
+//992px
+@media only screen and (max-width: $lg) {
+  .app {
+    .main {
+      width: 65vw;
+      .bottom {
+        .trivia {
+          margin-bottom: 3vh;
+          .answers {
+            grid-template: 1fr 1fr/ 1fr;
+          }
+        }
+      }
+      .loss {
+        h1 {
+          font-size: 2rem;
+        }
+      }
+    }
+    .pyramid {
+      width: 35vw;
+    }
+  }
+}
+//768px
+@media only screen and (max-width: $md) {
+  .app {
+    .main {
+      .top {
+        .timer {
+          font-size: 1rem;
+          width: 50px;
+          height: 50px;
+        }
+      }
+      .bottom {
+        .trivia {
+          .question {
+            font-size: 1rem;
+            margin-bottom: 20px;
+          }
+          .answers {
+            .answer {
+              padding: 15px;
+              font-size: 0.875rem;
+            }
+          }
+        }
+      }
+    }
+    .moneyList {
+      h2 {
+        font-size: 1.125rem;
+      }
+      .moneyListItem {
+        .moneyListItemAmount {
+          font-size: 0.875rem;
+        }
+        .moneyListItemNumber {
+          margin-right: 5px;
+          font-size: 0.875rem;
+        }
+      }
+    }
+  }
+  .mute {
+    padding: 0.35rem;
+    svg {
+      font-size: 1.5rem;
+    }
+  }
+}
+//576px
+@media only screen and (max-width: $sm) {
+  .app {
+    flex-direction: column;
+    .main {
+      width: 100%;
+      padding-top: 20vh;
+      padding-bottom: 2vh;
+      .top {
+        .timer {
+          left: 80%;
+        }
+      }
+    }
+    .pyramid {
+      width: 100%;
+      background-color: #020230;
+    }
   }
 }
