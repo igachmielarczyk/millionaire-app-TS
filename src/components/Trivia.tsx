@@ -8,6 +8,8 @@ interface Props {
   wrongAnswer: any;
   correctAnswer: any;
   letsPlay: any;
+  // kola ratunkowe
+  // handleWheelHalf: (question: Question, correctAnswer: string, incorrectAnswers: string[]) => void;
 }
 
 type Question = {
@@ -66,31 +68,62 @@ const Trivia = ({ allQuestion, setStop, setQuestionNumber, questionNumber, wrong
   }
 
   const handleClick = (answer: Answer) => {
-    setSelectedAnswer(answer);
-    setClassName("answer active");
-    // dlaczego tutaj uzywam funkcji strzalkowej po duratin
-    delay(3000, () => {
-      setClassName(answer.isCorrect ? "answer correct" : "answer wrong")
-    })
-    delay(5000, () => {
-      if(answer.isCorrect) {
-        correctAnswer()
-        delay(1000, ()=> {
-          setQuestionNumber((prev: number) => prev + 1);
-          setSelectedAnswer(null)
-        })
-
-      } else {
-        wrongAnswer()
-        delay(1000, () =>{ 
-          setStop(true)
-        })
-      }
-    })
+    if (selectedAnswer === null) {
+      setSelectedAnswer(answer);
+      setClassName("answer active");
+      // dlaczego tutaj uzywam funkcji strzalkowej po duration
+      delay(3000, () => {
+        setClassName(answer.isCorrect ? "answer correct" : "answer wrong")
+      })
+      delay(5000, () => {
+        if(answer.isCorrect) {
+          correctAnswer()
+          delay(1000, ()=> {
+            setQuestionNumber((prev: number) => prev + 1);
+            setSelectedAnswer(null)
+          })
+  
+        } else {
+          wrongAnswer()
+          delay(1000, () =>{ 
+            setStop(true)
+          })
+        }
+      })
+    }
   }
+
+  // wheel function
+  // kola ratunkowe
+
+  // const wheelHalf = () => {
+  //   if (currentQuestion) {
+  //     const { correct_answer, incorrect_answers } = currentQuestion;
+  //     const randomIncorrectIndex = Math.floor(Math.random() * incorrect_answers.length);
+  //     // handleWheelHalf(currentQuestion, correct_answer, [
+  //     //   ...incorrect_answers.slice(randomIncorrectIndex, randomIncorrectIndex + 1),
+  //     //   correct_answer,
+  //     // ]);
+  //   }
+  // };
+
+// działające koło ratukowe ale w Trivia
+  // const wheelHalf = () => {
+  //   if (currentQuestion) {
+  //     const { correct_answer, incorrect_answers } = currentQuestion;
+  //     const randomIncorrectIndex = Math.floor(Math.random() * incorrect_answers.length);
+  //     const selectedIncorrectAnswer = incorrect_answers[randomIncorrectIndex];
+  //     const answersToShow = [correct_answer, selectedIncorrectAnswer];
+  //     console.log(answersToShow); 
+  //   }
+  // };
 
   return (
     <div className="trivia">
+      {/* działające koło ale w Trviia i nie wiem jak zmienić wyświetlanie */}
+      {/* <div className="wheel" onClick={wheelHalf}>
+      50:50
+      </div> */}
       {currentQuestion && (
         <div className="question">
           {currentQuestion.question}

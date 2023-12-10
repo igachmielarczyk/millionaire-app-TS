@@ -96,6 +96,15 @@ const App = () => {
     }
   }, [isMuted, correctAnswer, wrongAnswer, letsPlay]);
 
+  // Lifebuoyes Function
+  // kola ratunkowe
+
+  // const handleWheelHalf = (question: Question, correctAnswer: string, incorrectAnswers: string[]) => {
+  //   console.log('Wyświetlenie jednej poprawnej i jednej niepoprawnej odpowiedzi:');
+  //   console.log('Poprawna odpowiedź:', correctAnswer);
+  //   console.log('Niepoprawna odpowiedź:', incorrectAnswers[0]);
+  // };
+
   return (
     <>
       <div className="app">
@@ -132,6 +141,8 @@ const App = () => {
                         letsPlay={letsPlay}
                         correctAnswer={correctAnswer}
                         wrongAnswer={wrongAnswer}
+                        // kola raunkowe
+                        // handleWheelHalf={handleWheelHalf}
                       />
                     )}
                   </div>
@@ -140,7 +151,9 @@ const App = () => {
             </div>
             <div className="pyramid">
               <div className="lifebuoys">
-                <div className="wheel">50:50</div>
+                <div className="wheel" >50:50</div>
+                {/* kola ratunkowe */}
+                {/* <div className="wheel" onClick={handleWheelHalf}>50:50</div> */}
                 <div className="wheel"><FaPhoneAlt /></div>
               </div>
               <ul className="moneyList">
