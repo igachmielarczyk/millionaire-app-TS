@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { moneyPyramid } from "./dataPyramid";
+import useFetchData from "./api";
 
-import axios from "axios";
-import useSound from 'use-sound';
-import play from './assets/sounds/play.mp3'
-import correct from './assets/sounds/correct.mp3'
-import wrong from './assets/sounds/wrong.mp3'
+// import axios from "axios";
+import useSound from "use-sound";
+import play from "./assets/sounds/play.mp3";
+import correct from "./assets/sounds/correct.mp3";
+import wrong from "./assets/sounds/wrong.mp3";
 
 // components
 import Trivia from "./components/Trivia";
@@ -32,29 +33,16 @@ const App = () => {
   const [username, setUsername] = useState<string | null>(null);
   const [questionNumber, setQuestionNumber] = useState(1);
   const [stop, setStop] = useState(false);
-  const [allQuestion, setAllQuestion] = useState<Questions[] | null>(null);
   const [earned, setEarned] = useState("$ 0");
 
   // sound
-  const [letsPlay, { stop: stopLetsPlay }] = useSound(play)
-  const [correctAnswer, { stop: stopCorrectAnswer }] = useSound(correct)
-  const [wrongAnswer, { stop: stopWrongAnswer }] = useSound(wrong)
-  const [isMuted, setIsMuted] = useState(false)
+  const [letsPlay, { stop: stopLetsPlay }] = useSound(play);
+  const [correctAnswer, { stop: stopCorrectAnswer }] = useSound(correct);
+  const [wrongAnswer, { stop: stopWrongAnswer }] = useSound(wrong);
+  const [isMuted, setIsMuted] = useState(false);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          "https://opentdb.com/api.php?amount=15&type=multiple"
-        );
-        setAllQuestion(response.data.results);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
+// fetch Question
+  const { allQuestion } = useFetchData(stop);
 
   useEffect(() => {
     questionNumber > 1 &&
@@ -75,8 +63,7 @@ const App = () => {
     setStop(false);
     setAllQuestion<Questions[]>;
     setEarned("$ 0");
-    console.log(allQuestion);
-    
+
   };
 
   // sound toggle
@@ -87,11 +74,11 @@ const App = () => {
   };
 
   const handleMuteToggle = () => {
-    setIsMuted((prevMuted) => !prevMuted)
-  }
+    setIsMuted((prevMuted) => !prevMuted);
+  };
 
   useEffect(() => {
-    if(isMuted) {
+    if (isMuted) {
       muteAllSounds();
     }
   }, [isMuted, correctAnswer, wrongAnswer, letsPlay]);
@@ -108,17 +95,21 @@ const App = () => {
   return (
     <>
       <div className="app">
-      <div className="mute" onClick={handleMuteToggle}>
-        {isMuted ? <IoVolumeMuteOutline /> : <GoUnmute /> }
-       
+        <div className="mute" onClick={handleMuteToggle}>
+          {isMuted ? <IoVolumeMuteOutline /> : <GoUnmute />}
         </div>
-        {username ? (
+        {questionNumber < 16 ? (username ? (
           <>
             <div className="main">
               {stop ? (
                 <div className="loss">
-                <h1 className="earnedText">You earned: {earned}</h1>
-                  <button className="startAgain" onClick={handleClickStartAgain}>Start Again</button>
+                  <h1 className="earnedText">You earned: {earned}</h1>
+                  <button
+                    className="startAgain"
+                    onClick={handleClickStartAgain}
+                  >
+                    Start Again
+                  </button>
                 </div>
               ) : (
                 <>
@@ -151,10 +142,12 @@ const App = () => {
             </div>
             <div className="pyramid">
               <div className="lifebuoys">
-                <div className="wheel" >50:50</div>
+                <div className="wheel">50:50</div>
                 {/* kola ratunkowe */}
                 {/* <div className="wheel" onClick={handleWheelHalf}>50:50</div> */}
-                <div className="wheel"><FaPhoneAlt /></div>
+                <div className="wheel">
+                  <FaPhoneAlt />
+                </div>
               </div>
               <ul className="moneyList">
                 <h2>Player: {username}</h2>
@@ -182,7 +175,23 @@ const App = () => {
               </button>
             </div>
           </>
-        )}
+        )) : (
+          <>
+          <div className="win start">
+            <div className="text">
+            <h1>{username}</h1>
+            <h2>you are a millionaire</h2>
+
+            </div>
+
+          <button className="startButton" onClick={handleClickStartAgain}>
+                Start Again
+              </button>
+          </div>
+          </>
+        )
+
+        }
       </div>
     </>
   );

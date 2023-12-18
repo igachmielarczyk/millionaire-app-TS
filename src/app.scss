@@ -263,6 +263,29 @@
     font-size: 3rem;
   }
 }
+.win {
+  .text {
+    background-color: #e6deb7;
+    text-transform: uppercase;
+    color: black;
+    width: auto;
+    padding: 2rem;
+    text-align: center;
+    margin-bottom: 2rem;
+    border-radius: 10px;
+  }
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	h1 {
+		font-size: 3rem;
+	}
+	h2 {
+		font-size: 2rem;
+    white-space: nowrap;
+	}
+}
 
 //Variables - dla media query
 $xs: 0;

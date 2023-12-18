@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import stopTimerSubject from "../rxjs/stopTimerSubject";
 
 interface Props {
   allQuestion: Question[];
@@ -81,11 +82,13 @@ const Trivia = ({ allQuestion, setStop, setQuestionNumber, questionNumber, wrong
           delay(1000, ()=> {
             setQuestionNumber((prev: number) => prev + 1);
             setSelectedAnswer(null)
+            stopTimerSubject.next();
           })
   
         } else {
           wrongAnswer()
           delay(1000, () =>{ 
+            stopTimerSubject.next();
             setStop(true)
           })
         }
