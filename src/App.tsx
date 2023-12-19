@@ -27,6 +27,7 @@ type Questions = {
   incorrect_answers: string[];
 }[];
 
+
 // type Sound = [HTMLAudioElement, SoundManager];
 
 const App = () => {
@@ -61,9 +62,8 @@ const App = () => {
     // setUsername(null);
     setQuestionNumber(1);
     setStop(false);
-    setAllQuestion<Questions[]>;
+    allQuestion<Questions[]>;
     setEarned("$ 0");
-
   };
 
   // sound toggle

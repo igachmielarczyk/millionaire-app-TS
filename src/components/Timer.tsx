@@ -10,7 +10,7 @@ interface Props {
 
 
 
-const Timer = ({setStop, questionNumber, wrongAnswer,}: Props) => {
+const Timer = ({setStop, questionNumber, wrongAnswer}: Props) => {
   const [timer, setTimer] = useState(10);
 
   useEffect(() => {

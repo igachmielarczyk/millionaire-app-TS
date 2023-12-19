@@ -72,6 +72,7 @@ const Trivia = ({ allQuestion, setStop, setQuestionNumber, questionNumber, wrong
     if (selectedAnswer === null) {
       setSelectedAnswer(answer);
       setClassName("answer active");
+      stopTimerSubject.next();
       // dlaczego tutaj uzywam funkcji strzalkowej po duration
       delay(3000, () => {
         setClassName(answer.isCorrect ? "answer correct" : "answer wrong")
@@ -79,16 +80,17 @@ const Trivia = ({ allQuestion, setStop, setQuestionNumber, questionNumber, wrong
       delay(5000, () => {
         if(answer.isCorrect) {
           correctAnswer()
+
           delay(1000, ()=> {
             setQuestionNumber((prev: number) => prev + 1);
             setSelectedAnswer(null)
-            stopTimerSubject.next();
+            
           })
   
         } else {
           wrongAnswer()
           delay(1000, () =>{ 
-            stopTimerSubject.next();
+            
             setStop(true)
           })
         }
