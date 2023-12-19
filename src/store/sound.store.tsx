@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import useSound, { SoundManager } from 'use-sound';
+import useSound from 'use-sound';
 import playSound from '../assets/sounds/play.mp3';
 import correctSound from '../assets/sounds/correct.mp3';
 import wrongSound from '../assets/sounds/wrong.mp3';
