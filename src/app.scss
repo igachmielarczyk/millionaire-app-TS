@@ -63,6 +63,7 @@
           display: grid;
           grid-template: 1fr 1fr/ 1fr 1fr;
           gap: 20px;
+          align-items: start;
           .answer {
             border-radius: 15px;
             font-weight: 300;
@@ -83,6 +84,9 @@
             }
             &.wrong {
               animation: wrong 3s ease forwards;
+            }
+            &.phone-answer {
+              background: rgb(59, 118, 59);
             }
           }
         }
@@ -134,6 +138,11 @@
         border-radius: 50%;
         cursor: pointer;
         transition: all .3s linear;
+        &.disable {
+          pointer-events: none;
+          background-color: #ae2c2c;
+        }
+
         &:hover {
           border: 1px solid teal;
           background-color: teal;
