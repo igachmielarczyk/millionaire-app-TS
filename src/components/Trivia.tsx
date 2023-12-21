@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import stopTimerSubject from "../rxjs/stopTimerSubject";
+import { halfStore, phoneStore } from "../store/wheel.store";
 
 interface Props {
   allQuestion: Question[];
@@ -9,6 +10,7 @@ interface Props {
   wrongAnswer: any;
   correctAnswer: any;
   letsPlay: any;
+  showHalfAnswers: boolean;
   // kola ratunkowe
   // handleWheelHalf: (question: Question, correctAnswer: string, incorrectAnswers: string[]) => void;
 }
@@ -29,19 +31,34 @@ type Answer = {
   className?: string;
 };
 
-const Trivia = ({ allQuestion, setStop, setQuestionNumber, questionNumber, wrongAnswer, correctAnswer, letsPlay}: Props) => {
+const Trivia = ({
+  allQuestion,
+  setStop,
+  setQuestionNumber,
+  questionNumber,
+  wrongAnswer,
+  correctAnswer,
+  letsPlay,
+}: Props) => {
   const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
   const [selectedAnswer, setSelectedAnswer] = useState<Answer | null>(null);
-  const [className, setClassName] = useState("answer")
+  const [className, setClassName] = useState("answer");
 
   useEffect(() => {
-    letsPlay()
-  },[letsPlay])
+    letsPlay();
+  }, [letsPlay]);
 
   useEffect(() => {
-    if (allQuestion && questionNumber > 0 && questionNumber <= allQuestion.length) {
+    if (
+      allQuestion &&
+      questionNumber > 0 &&
+      questionNumber <= allQuestion.length
+    ) {
       const shuffledAnswers = shuffleAnswers(allQuestion[questionNumber - 1]);
-      setCurrentQuestion({ ...allQuestion[questionNumber - 1], answers: shuffledAnswers });
+      setCurrentQuestion({
+        ...allQuestion[questionNumber - 1],
+        answers: shuffledAnswers,
+      });
     }
   }, [allQuestion, questionNumber]);
 
@@ -49,24 +66,22 @@ const Trivia = ({ allQuestion, setStop, setQuestionNumber, questionNumber, wrong
     const allAnswers = [...question.incorrect_answers, question.correct_answer];
     const shuffled = allAnswers.sort(() => Math.random() - 0.5);
 
-    const answersWithFlags = shuffled.map(answer => {
+    const answersWithFlags = shuffled.map((answer) => {
       return {
         answer,
         isCorrect: answer === question.correct_answer,
-        className: answer === question.correct_answer ? 'correct-answer' : '',
-        
+        className: answer === question.correct_answer ? "correct-answer" : "",
       };
     });
 
     return answersWithFlags;
-    
   };
 
   const delay = (duration: number | undefined, callback: () => void) => {
     setTimeout(() => {
-      callback()
-    }, duration)
-  }
+      callback();
+    }, duration);
+  };
 
   const handleClick = (answer: Answer) => {
     if (selectedAnswer === null) {
@@ -75,72 +90,132 @@ const Trivia = ({ allQuestion, setStop, setQuestionNumber, questionNumber, wrong
       stopTimerSubject.next();
       // dlaczego tutaj uzywam funkcji strzalkowej po duration
       delay(3000, () => {
-        setClassName(answer.isCorrect ? "answer correct" : "answer wrong")
-      })
+        setClassName(answer.isCorrect ? "answer correct" : "answer wrong");
+      });
       delay(5000, () => {
-        if(answer.isCorrect) {
-          correctAnswer()
+        if (answer.isCorrect) {
+          correctAnswer();
 
-          delay(1000, ()=> {
+          delay(1000, () => {
             setQuestionNumber((prev: number) => prev + 1);
-            setSelectedAnswer(null)
-            
-          })
-  
+            setSelectedAnswer(null);
+          });
         } else {
-          wrongAnswer()
-          delay(1000, () =>{ 
-            
-            setStop(true)
-          })
+          wrongAnswer();
+          delay(1000, () => {
+            setStop(true);
+          });
         }
-      })
+      });
     }
-  }
 
-  // wheel function
-  // kola ratunkowe
+      if (showHalf) {
+        const timerHalf = setTimeout(() => {
+          toggleHalf();
+        }, 6000);
+        return () => clearTimeout(timerHalf);
+      }
+      if (showPhone) {
+        const timerPhone = setTimeout(() => {
+          togglePhone();
+        }, 6000);
+        return () => clearTimeout(timerPhone);
+      }
 
-  // const wheelHalf = () => {
-  //   if (currentQuestion) {
-  //     const { correct_answer, incorrect_answers } = currentQuestion;
-  //     const randomIncorrectIndex = Math.floor(Math.random() * incorrect_answers.length);
-  //     // handleWheelHalf(currentQuestion, correct_answer, [
-  //     //   ...incorrect_answers.slice(randomIncorrectIndex, randomIncorrectIndex + 1),
-  //     //   correct_answer,
-  //     // ]);
-  //   }
-  // };
+  };
 
-// działające koło ratukowe ale w Trivia
-  // const wheelHalf = () => {
-  //   if (currentQuestion) {
-  //     const { correct_answer, incorrect_answers } = currentQuestion;
-  //     const randomIncorrectIndex = Math.floor(Math.random() * incorrect_answers.length);
-  //     const selectedIncorrectAnswer = incorrect_answers[randomIncorrectIndex];
-  //     const answersToShow = [correct_answer, selectedIncorrectAnswer];
-  //     console.log(answersToShow); 
-  //   }
-  // };
+  const { showHalf,toggleHalf } = halfStore();
+  const {showPhone, togglePhone} = phoneStore()
+
+  const [answersToShow, setAnswersToShow] = useState<Answer[]>([]);
+  
+  useEffect(() => {
+    if (currentQuestion && showHalf) {
+      const { correct_answer, incorrect_answers } = currentQuestion;
+
+      const randomIncorrectIndex = Math.floor(
+        Math.random() * incorrect_answers.length
+      );
+      const selectedIncorrectAnswer = incorrect_answers[randomIncorrectIndex];
+
+      const newAnswersToShow: Answer[] = [
+        { answer: correct_answer, isCorrect: true, className: "correct-answer" },
+        { answer: selectedIncorrectAnswer, isCorrect: false, className: "" }
+      ];
+      setAnswersToShow(newAnswersToShow);
+    }
+  }, [currentQuestion, showHalf]);
+
 
   return (
     <div className="trivia">
-      {/* działające koło ale w Trviia i nie wiem jak zmienić wyświetlanie */}
-      {/* <div className="wheel" onClick={wheelHalf}>
-      50:50
-      </div> */}
       {currentQuestion && (
-        <div className="question">
-          {currentQuestion.question}
-        </div>
+        <div className="question">{currentQuestion.question}</div>
       )}
-      <div className="answers">
-        {currentQuestion?.answers?.map((answer, index) => (
-          <div className={selectedAnswer === answer ? className : `answer ${answer.className}`} key={index} onClick={(_event: React.MouseEvent<HTMLDivElement>) => handleClick(answer)}>
-            {answer.isCorrect ? <strong>{answer.answer}</strong> : answer.answer}
-          </div>
-        ))}
+<div className="answers">
+  {(showHalf ? answersToShow : currentQuestion?.answers)?.map(
+    (answer, index) => (
+      <div
+        className={
+          selectedAnswer === answer
+            ? className
+            : `answer ${answer.className} ${answer.isCorrect && showPhone ? 'phone-answer' : ''}`
+        }
+        key={index}
+        onClick={(_event: React.MouseEvent<HTMLDivElement>) =>
+          handleClick(answer)
+        }
+      >
+        {answer.isCorrect ? <strong>{answer.answer}</strong> : answer.answer}
       </div>
+    )
+  )}
+</div>
+      {/* {!showHalf ? (
+        <div className="answers">
+          {currentQuestion?.answers?.map((answer, index) => (
+            <div
+              className={
+                answersToShow === answer
+                  ? className
+                  : `answer ${answer.className}`
+              }
+              key={index}
+              onClick={(_event: React.MouseEvent<HTMLDivElement>) =>
+                handleClick(answer)
+              }
+            >
+              {answer.isCorrect ? (
+                <strong>{answer.answer}</strong>
+              ) : (
+                answer.answer
+              )}
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="answers">
+          {currentQuestion?.answers?.map((answer, index) => (
+            <div
+              className={
+                selectedAnswer === answer
+                  ? className
+                  : `answer ${answer.className}`
+              }
+              key={index}
+              onClick={(_event: React.MouseEvent<HTMLDivElement>) =>
+                handleClick(answer)
+              }
+            >
+              {answer.isCorrect ? (
+                <strong>{answer.answer}</strong>
+              ) : (
+                answer.answer
+              )}
+            </div>
+          ))}
+        </div>
+      )} */}
     </div>
   );
 };

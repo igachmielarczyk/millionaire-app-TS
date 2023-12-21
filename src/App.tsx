@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
+import React, { useCallback } from "react";
 import { moneyPyramid } from "./dataPyramid";
 import useFetchData from "./api";
+import { halfStore, phoneStore } from "./store/wheel.store";
 
 // import axios from "axios";
 import useSound from "use-sound";
@@ -27,7 +29,6 @@ type Questions = {
   incorrect_answers: string[];
 }[];
 
-
 // type Sound = [HTMLAudioElement, SoundManager];
 
 const App = () => {
@@ -35,6 +36,8 @@ const App = () => {
   const [questionNumber, setQuestionNumber] = useState(1);
   const [stop, setStop] = useState(false);
   const [earned, setEarned] = useState("$ 0");
+  const [showHalfAnswers, setShowHalfAnswers] = useState(false);
+  const [showPhoneAnswers, setShowPhoneAnswers] = useState(false);
 
   // sound
   const [letsPlay, { stop: stopLetsPlay }] = useSound(play);
@@ -42,7 +45,11 @@ const App = () => {
   const [wrongAnswer, { stop: stopWrongAnswer }] = useSound(wrong);
   const [isMuted, setIsMuted] = useState(false);
 
-// fetch Question
+  // store Wheel
+  const { showHalf, toggleHalf } = halfStore();
+  const { showPhone, togglePhone } = phoneStore();
+
+  // fetch Question
   const { allQuestion } = useFetchData(stop);
 
   useEffect(() => {
@@ -64,6 +71,10 @@ const App = () => {
     setStop(false);
     allQuestion<Questions[]>;
     setEarned("$ 0");
+    halfStore.getState().showHalf = false;
+    phoneStore.getState().showPhone = false;
+    setShowHalfAnswers(false)
+    setShowPhoneAnswers(false)
   };
 
   // sound toggle
@@ -84,13 +95,15 @@ const App = () => {
   }, [isMuted, correctAnswer, wrongAnswer, letsPlay]);
 
   // Lifebuoyes Function
-  // kola ratunkowe
 
-  // const handleWheelHalf = (question: Question, correctAnswer: string, incorrectAnswers: string[]) => {
-  //   console.log('Wyświetlenie jednej poprawnej i jednej niepoprawnej odpowiedzi:');
-  //   console.log('Poprawna odpowiedź:', correctAnswer);
-  //   console.log('Niepoprawna odpowiedź:', incorrectAnswers[0]);
-  // };
+  const handleWheelHalf = () => {
+    toggleHalf();
+    setShowHalfAnswers(true);
+  };
+  const handleWheePhone = () => {
+    togglePhone();
+    setShowPhoneAnswers(true);
+  };
 
   return (
     <>
@@ -98,100 +111,100 @@ const App = () => {
         <div className="mute" onClick={handleMuteToggle}>
           {isMuted ? <IoVolumeMuteOutline /> : <GoUnmute />}
         </div>
-        {questionNumber < 16 ? (username ? (
-          <>
-            <div className="main">
-              {stop ? (
-                <div className="loss">
-                  <h1 className="earnedText">You earned: {earned}</h1>
-                  <button
-                    className="startAgain"
-                    onClick={handleClickStartAgain}
-                  >
-                    Start Again
-                  </button>
-                </div>
-              ) : (
-                <>
-                  <div className="top">
-                    <div className="timer">
-                      <Timer
-                        setStop={setStop}
-                        questionNumber={questionNumber}
-                        wrongAnswer={wrongAnswer}
-                      />
+        {questionNumber < 16 ? (
+          username ? (
+            <>
+              <div className="main">
+                {stop ? (
+                  <div className="loss">
+                    <h1 className="earnedText">You earned: {earned}</h1>
+                    <button
+                      className="startAgain"
+                      onClick={handleClickStartAgain}
+                    >
+                      Start Again
+                    </button>
+                  </div>
+                ) : (
+                  <>
+                    <div className="top">
+                      <div className="timer">
+                        <Timer
+                          setStop={setStop}
+                          questionNumber={questionNumber}
+                          wrongAnswer={wrongAnswer}
+                        />
+                      </div>
                     </div>
-                  </div>
-                  <div className="bottom">
-                    {allQuestion !== null && allQuestion.length > 0 && (
-                      <Trivia
-                        allQuestion={allQuestion}
-                        setStop={setStop}
-                        setQuestionNumber={setQuestionNumber}
-                        questionNumber={questionNumber}
-                        letsPlay={letsPlay}
-                        correctAnswer={correctAnswer}
-                        wrongAnswer={wrongAnswer}
-                        // kola raunkowe
-                        // handleWheelHalf={handleWheelHalf}
-                      />
-                    )}
-                  </div>
-                </>
-              )}
-            </div>
-            <div className="pyramid">
-              <div className="lifebuoys">
-                <div className="wheel">50:50</div>
-                {/* kola ratunkowe */}
-                {/* <div className="wheel" onClick={handleWheelHalf}>50:50</div> */}
-                <div className="wheel">
-                  <FaPhoneAlt />
-                </div>
+                    <div className="bottom">
+                      {allQuestion !== null && allQuestion.length > 0 && (
+                        <Trivia
+                          allQuestion={allQuestion}
+                          setStop={setStop}
+                          setQuestionNumber={setQuestionNumber}
+                          questionNumber={questionNumber}
+                          letsPlay={letsPlay}
+                          correctAnswer={correctAnswer}
+                          wrongAnswer={wrongAnswer}
+                        />
+                      )}
+                    </div>
+                  </>
+                )}
               </div>
-              <ul className="moneyList">
-                <h2>Player: {username}</h2>
-                {moneyPyramid.map((m) => (
-                  <ListPyramid
-                    key={m.id}
-                    m={m}
-                    questionNumber={questionNumber}
-                  />
-                ))}
-              </ul>
-            </div>
-          </>
+              <div className="pyramid">
+                <div className="lifebuoys">
+                  <div
+                    className={`wheel ${showHalfAnswers ? "disable" : ""}`}
+                    onClick={handleWheelHalf}
+                  >
+                    50:50
+                  </div>
+                  <div className={`wheel ${showPhoneAnswers ? "disable" : ''}`} onClick={handleWheePhone}>
+                    <FaPhoneAlt />
+                  </div>
+                </div>
+                <ul className="moneyList">
+                  <h2>Player: {username}</h2>
+                  {moneyPyramid.map((m) => (
+                    <ListPyramid
+                      key={m.id}
+                      m={m}
+                      questionNumber={questionNumber}
+                    />
+                  ))}
+                </ul>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="start">
+                <input
+                  type="text"
+                  placeholder="enter your name"
+                  className="startInput"
+                  ref={inputRef}
+                />
+                <button className="startButton" onClick={handleClickInput}>
+                  Start
+                </button>
+              </div>
+            </>
+          )
         ) : (
           <>
-            <div className="start">
-              <input
-                type="text"
-                placeholder="enter your name"
-                className="startInput"
-                ref={inputRef}
-              />
-              <button className="startButton" onClick={handleClickInput}>
-                Start
-              </button>
-            </div>
-          </>
-        )) : (
-          <>
-          <div className="win start">
-            <div className="text">
-            <h1>{username}</h1>
-            <h2>you are a millionaire</h2>
+            <div className="win start">
+              <div className="text">
+                <h1>{username}</h1>
+                <h2>you are a millionaire</h2>
+              </div>
 
-            </div>
-
-          <button className="startButton" onClick={handleClickStartAgain}>
+              <button className="startButton" onClick={handleClickStartAgain}>
                 Start Again
               </button>
-          </div>
+            </div>
           </>
-        )
-
-        }
+        )}
       </div>
     </>
   );
