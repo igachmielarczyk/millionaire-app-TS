@@ -1,24 +1,20 @@
 import { useEffect, useState } from "react";
 import stopTimerSubject from "../rxjs/stopTimerSubject";
 
-
 interface Props {
   setStop: (value: boolean) => void;
   questionNumber: number;
-  wrongAnswer: any
+  wrongAnswer: any;
 }
-
-
-
-const Timer = ({setStop, questionNumber, wrongAnswer}: Props) => {
-  const [timer, setTimer] = useState(10);
+const Timer = ({ setStop, questionNumber, wrongAnswer }: Props) => {
+  const [timer, setTimer] = useState(30);
 
   useEffect(() => {
-    if (timer === 0) return (setStop(true), wrongAnswer())
+    if (timer === 0) return setStop(true), wrongAnswer();
     const interval = setInterval(() => {
       setTimer((prev) => {
         if (prev === 0) {
-          clearInterval(interval); // Zatrzymaj interwał, gdy timer osiągnie 0
+          clearInterval(interval);
           return prev;
         }
         return prev - 1;
@@ -26,20 +22,18 @@ const Timer = ({setStop, questionNumber, wrongAnswer}: Props) => {
     }, 1000);
 
     const subscription = stopTimerSubject.subscribe(() => {
-      clearInterval(interval)
+      clearInterval(interval);
     });
 
-
-    // Cleanup: Zatrzymaj interwał po odmontowaniu komponentu
     return () => clearInterval(interval);
     subscription.unsubscribe();
-  }, [setStop, timer, wrongAnswer]); 
+  }, [setStop, timer, wrongAnswer]);
 
   useEffect(() => {
-    setTimer(10)
-  }, [questionNumber])
+    setTimer(30);
+  }, [questionNumber]);
 
   return timer;
-}
+};
 
-export default Timer
+export default Timer;

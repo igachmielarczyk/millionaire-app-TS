@@ -4,7 +4,6 @@ import { moneyPyramid } from "./dataPyramid";
 import useFetchData from "./api";
 import { halfStore, phoneStore } from "./store/wheel.store";
 
-// import axios from "axios";
 import useSound from "use-sound";
 import play from "./assets/sounds/play.mp3";
 import correct from "./assets/sounds/correct.mp3";
@@ -66,15 +65,14 @@ const App = () => {
   // play Again
 
   const handleClickStartAgain = () => {
-    // setUsername(null);
     setQuestionNumber(1);
     setStop(false);
     allQuestion<Questions[]>;
     setEarned("$ 0");
     halfStore.getState().showHalf = false;
     phoneStore.getState().showPhone = false;
-    setShowHalfAnswers(false)
-    setShowPhoneAnswers(false)
+    setShowHalfAnswers(false);
+    setShowPhoneAnswers(false);
   };
 
   // sound toggle
@@ -160,7 +158,10 @@ const App = () => {
                   >
                     50:50
                   </div>
-                  <div className={`wheel ${showPhoneAnswers ? "disable" : ''}`} onClick={handleWheePhone}>
+                  <div
+                    className={`wheel ${showPhoneAnswers ? "disable" : ""}`}
+                    onClick={handleWheePhone}
+                  >
                     <FaPhoneAlt />
                   </div>
                 </div>
