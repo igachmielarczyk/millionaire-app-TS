@@ -1,16 +1,33 @@
 import { useEffect, useState } from "react";
 import stopTimerSubject from "../rxjs/stopTimerSubject";
+import { useSoundStore } from "../store/sound.store";
 
 interface Props {
   setStop: (value: boolean) => void;
   questionNumber: number;
   wrongAnswer: any;
+  stopWrongAnswer: any;
 }
-const Timer = ({ setStop, questionNumber, wrongAnswer }: Props) => {
+
+const Timer = ({
+  setStop,
+  questionNumber,
+  wrongAnswer,
+  stopWrongAnswer,
+}: Props) => {
   const [timer, setTimer] = useState(30);
+  const { isMuted } = useSoundStore();
 
   useEffect(() => {
-    if (timer === 0) return setStop(true), wrongAnswer();
+    const handleTimerEnd = () => {
+      if (!isMuted) {
+        wrongAnswer();
+      } else {
+        stopWrongAnswer();
+      }
+    };
+
+    if (timer === 0) return setStop(true), handleTimerEnd();
     const interval = setInterval(() => {
       setTimer((prev) => {
         if (prev === 0) {

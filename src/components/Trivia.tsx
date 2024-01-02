@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import stopTimerSubject from "../rxjs/stopTimerSubject";
 import { halfStore, phoneStore } from "../store/wheel.store";
+import { useSoundStore } from "../store/sound.store";
 
 interface Props {
   allQuestion: Question[];
@@ -10,6 +11,9 @@ interface Props {
   wrongAnswer: any;
   correctAnswer: any;
   letsPlay: any;
+  stopLetsPlay: any;
+  stopCorrectAnswer: any;
+  stopWrongAnswer: any;
   showHalfAnswers: boolean;
 }
 
@@ -37,13 +41,20 @@ const Trivia = ({
   wrongAnswer,
   correctAnswer,
   letsPlay,
+  stopLetsPlay,
+  stopCorrectAnswer,
+  stopWrongAnswer,
 }: Props) => {
   const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
   const [selectedAnswer, setSelectedAnswer] = useState<Answer | null>(null);
   const [className, setClassName] = useState("answer");
 
   useEffect(() => {
-    letsPlay();
+    if (!isMuted) {
+      letsPlay();
+    } else {
+      stopLetsPlay();
+    }
   }, [letsPlay]);
 
   useEffect(() => {
@@ -91,14 +102,23 @@ const Trivia = ({
       });
       delay(5000, () => {
         if (answer.isCorrect) {
-          correctAnswer();
+          if (!isMuted) {
+            correctAnswer();
+          } else {
+            stopCorrectAnswer();
+          }
 
           delay(1000, () => {
             setQuestionNumber((prev: number) => prev + 1);
             setSelectedAnswer(null);
           });
         } else {
-          wrongAnswer();
+          if (!isMuted) {
+            wrongAnswer();
+          } else {
+            stopWrongAnswer();
+          }
+
           delay(1000, () => {
             setStop(true);
           });
@@ -145,6 +165,24 @@ const Trivia = ({
       setAnswersToShow(newAnswersToShow);
     }
   }, [currentQuestion, showHalf]);
+
+  // muted sound
+  const { isMuted } = useSoundStore();
+
+  useEffect(() => {
+    if (isMuted) {
+      stopLetsPlay();
+      stopCorrectAnswer();
+      stopWrongAnswer();
+    }
+  }, [
+    letsPlay,
+    stopLetsPlay,
+    stopCorrectAnswer,
+    stopWrongAnswer,
+    isMuted,
+    currentQuestion,
+  ]);
 
   return (
     <div className="trivia">
