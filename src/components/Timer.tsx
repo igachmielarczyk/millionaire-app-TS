@@ -1,24 +1,33 @@
 import { useEffect, useState } from "react";
 import stopTimerSubject from "../rxjs/stopTimerSubject";
-
+import { useSoundStore } from '../store/sound.store';
 
 interface Props {
   setStop: (value: boolean) => void;
   questionNumber: number;
   wrongAnswer: any
+  stopWrongAnswer: any
 }
 
 
-
-const Timer = ({setStop, questionNumber, wrongAnswer}: Props) => {
-  const [timer, setTimer] = useState(10);
+const Timer = ({setStop, questionNumber, wrongAnswer, stopWrongAnswer}: Props) => {
+  const [timer, setTimer] = useState(30);
+  const { isMuted } = useSoundStore();
 
   useEffect(() => {
-    if (timer === 0) return (setStop(true), wrongAnswer())
+    const handleTimerEnd = () => {
+      if (!isMuted) {
+        wrongAnswer();
+      } else {
+        stopWrongAnswer();
+      }
+    };
+
+    if (timer === 0) return (setStop(true), handleTimerEnd())
     const interval = setInterval(() => {
       setTimer((prev) => {
         if (prev === 0) {
-          clearInterval(interval); // Zatrzymaj interwał, gdy timer osiągnie 0
+          clearInterval(interval);
           return prev;
         }
         return prev - 1;
@@ -29,14 +38,12 @@ const Timer = ({setStop, questionNumber, wrongAnswer}: Props) => {
       clearInterval(interval)
     });
 
-
-    // Cleanup: Zatrzymaj interwał po odmontowaniu komponentu
     return () => clearInterval(interval);
     subscription.unsubscribe();
   }, [setStop, timer, wrongAnswer]); 
 
   useEffect(() => {
-    setTimer(10)
+    setTimer(30)
   }, [questionNumber])
 
   return timer;

@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import React, { useCallback } from "react";
 import { moneyPyramid } from "./dataPyramid";
 import useFetchData from "./api";
 import { halfStore, phoneStore } from "./store/wheel.store";
-import { useSoundStore,SoundState } from "./store/sound.store";
+import { useSoundStore, SoundState } from "./store/sound.store";
 
 import useSound from "use-sound";
 import play from "./assets/sounds/play.mp3";
@@ -29,8 +28,6 @@ type Questions = {
   incorrect_answers: string[];
 }[];
 
-// type Sound = [HTMLAudioElement, SoundManager];
-
 const App = () => {
   const [username, setUsername] = useState<string | null>(null);
   const [questionNumber, setQuestionNumber] = useState(1);
@@ -43,11 +40,10 @@ const App = () => {
   const [letsPlay, { stop: stopLetsPlay }] = useSound(play);
   const [correctAnswer, { stop: stopCorrectAnswer }] = useSound(correct);
   const [wrongAnswer, { stop: stopWrongAnswer }] = useSound(wrong);
-  // const [isMuted, setIsMuted] = useState(false);
 
   // store Wheel
-  const { showHalf, toggleHalf } = halfStore();
-  const { showPhone, togglePhone } = phoneStore();
+  const {  toggleHalf } = halfStore();
+  const {  togglePhone } = phoneStore();
 
   // fetch Question
   const { allQuestion } = useFetchData(stop);
@@ -76,23 +72,6 @@ const App = () => {
     setShowPhoneAnswers(false);
   };
 
-  // sound toggle
-  // const muteAllSounds = () => {
-  //   stopLetsPlay();
-  //   stopCorrectAnswer();
-  //   stopWrongAnswer();
-  // };
-
-  // const handleMuteToggle = () => {
-  //   setIsMuted((prevMuted) => !prevMuted);
-  // };
-
-  // useEffect(() => {
-  //   if (isMuted) {
-  //     muteAllSounds();
-  //   }
-  // }, [isMuted, correctAnswer, wrongAnswer, letsPlay]);
-
   // Lifebuoyes Function
 
   const handleWheelHalf = () => {
@@ -112,11 +91,11 @@ const App = () => {
     toggleMute();
     console.log(useSoundStore.getState().isMuted);
     if (!isMuted) {
-          stopLetsPlay();
-    stopCorrectAnswer();
-    stopWrongAnswer();
+      stopLetsPlay();
+      stopCorrectAnswer();
+      stopWrongAnswer();
     }
-  }
+  };
 
   return (
     <>
@@ -146,6 +125,7 @@ const App = () => {
                           setStop={setStop}
                           questionNumber={questionNumber}
                           wrongAnswer={wrongAnswer}
+                          stopWrongAnswer={stopWrongAnswer}
                         />
                       </div>
                     </div>
@@ -161,7 +141,7 @@ const App = () => {
                           wrongAnswer={wrongAnswer}
                           stopLetsPlay={stopLetsPlay}
                           stopCorrectAnswer={stopCorrectAnswer}
-                          stopWrongAnswer= {stopWrongAnswer}
+                          stopWrongAnswer={stopWrongAnswer}
                         />
                       )}
                     </div>

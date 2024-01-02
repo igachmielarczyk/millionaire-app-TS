@@ -50,7 +50,12 @@ const Trivia = ({
   const [className, setClassName] = useState("answer");
  
   useEffect(() => {
-    letsPlay();
+    if(!isMuted) {
+      letsPlay();
+    } else {
+      stopLetsPlay();
+    }
+    
   }, [letsPlay]);
 
   useEffect(() => {
@@ -98,14 +103,26 @@ const Trivia = ({
       });
       delay(5000, () => {
         if (answer.isCorrect) {
-          correctAnswer();
+          if (!isMuted) {
+            
+            correctAnswer();
+          } else {
+            stopCorrectAnswer();
+          }
+          
 
           delay(1000, () => {
             setQuestionNumber((prev: number) => prev + 1);
             setSelectedAnswer(null);
           });
         } else {
-          wrongAnswer();
+          if (!isMuted){
+            wrongAnswer();
+            
+          } else {
+            stopWrongAnswer();
+          }
+
           delay(1000, () => {
             setStop(true);
           });
@@ -158,7 +175,7 @@ const Trivia = ({
   const { isMuted, toggleMute } = useSoundStore();
 
   useEffect(() => {
-    if (!isMuted) {
+    if (isMuted) {
       stopLetsPlay();
       stopCorrectAnswer();
       stopWrongAnswer();
@@ -187,12 +204,12 @@ const Trivia = ({
                 handleClick(answer)
               }
             >
-              {answer.isCorrect ? (
+              {/* {answer.isCorrect ? (
                 <strong>{answer.answer}</strong>
               ) : (
                 answer.answer
-              )}
-              {/* {answer.answer} */}
+              )} */}
+              {answer.answer}
             </div>
           )
         )}
