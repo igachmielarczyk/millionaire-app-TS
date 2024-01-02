@@ -3,8 +3,8 @@ import React, { useCallback } from "react";
 import { moneyPyramid } from "./dataPyramid";
 import useFetchData from "./api";
 import { halfStore, phoneStore } from "./store/wheel.store";
+import { useSoundStore,SoundState } from "./store/sound.store";
 
-// import axios from "axios";
 import useSound from "use-sound";
 import play from "./assets/sounds/play.mp3";
 import correct from "./assets/sounds/correct.mp3";
@@ -43,7 +43,7 @@ const App = () => {
   const [letsPlay, { stop: stopLetsPlay }] = useSound(play);
   const [correctAnswer, { stop: stopCorrectAnswer }] = useSound(correct);
   const [wrongAnswer, { stop: stopWrongAnswer }] = useSound(wrong);
-  const [isMuted, setIsMuted] = useState(false);
+  // const [isMuted, setIsMuted] = useState(false);
 
   // store Wheel
   const { showHalf, toggleHalf } = halfStore();
@@ -66,33 +66,32 @@ const App = () => {
   // play Again
 
   const handleClickStartAgain = () => {
-    // setUsername(null);
     setQuestionNumber(1);
     setStop(false);
     allQuestion<Questions[]>;
     setEarned("$ 0");
     halfStore.getState().showHalf = false;
     phoneStore.getState().showPhone = false;
-    setShowHalfAnswers(false)
-    setShowPhoneAnswers(false)
+    setShowHalfAnswers(false);
+    setShowPhoneAnswers(false);
   };
 
   // sound toggle
-  const muteAllSounds = () => {
-    stopLetsPlay();
-    stopCorrectAnswer();
-    stopWrongAnswer();
-  };
+  // const muteAllSounds = () => {
+  //   stopLetsPlay();
+  //   stopCorrectAnswer();
+  //   stopWrongAnswer();
+  // };
 
-  const handleMuteToggle = () => {
-    setIsMuted((prevMuted) => !prevMuted);
-  };
+  // const handleMuteToggle = () => {
+  //   setIsMuted((prevMuted) => !prevMuted);
+  // };
 
-  useEffect(() => {
-    if (isMuted) {
-      muteAllSounds();
-    }
-  }, [isMuted, correctAnswer, wrongAnswer, letsPlay]);
+  // useEffect(() => {
+  //   if (isMuted) {
+  //     muteAllSounds();
+  //   }
+  // }, [isMuted, correctAnswer, wrongAnswer, letsPlay]);
 
   // Lifebuoyes Function
 
@@ -104,6 +103,20 @@ const App = () => {
     togglePhone();
     setShowPhoneAnswers(true);
   };
+
+  // Mute sounds
+
+  const { isMuted, toggleMute } = useSoundStore();
+
+  const handleMuteToggle = () => {
+    toggleMute();
+    console.log(useSoundStore.getState().isMuted);
+    if (!isMuted) {
+          stopLetsPlay();
+    stopCorrectAnswer();
+    stopWrongAnswer();
+    }
+  }
 
   return (
     <>
@@ -146,6 +159,9 @@ const App = () => {
                           letsPlay={letsPlay}
                           correctAnswer={correctAnswer}
                           wrongAnswer={wrongAnswer}
+                          stopLetsPlay={stopLetsPlay}
+                          stopCorrectAnswer={stopCorrectAnswer}
+                          stopWrongAnswer= {stopWrongAnswer}
                         />
                       )}
                     </div>
@@ -160,7 +176,10 @@ const App = () => {
                   >
                     50:50
                   </div>
-                  <div className={`wheel ${showPhoneAnswers ? "disable" : ''}`} onClick={handleWheePhone}>
+                  <div
+                    className={`wheel ${showPhoneAnswers ? "disable" : ""}`}
+                    onClick={handleWheePhone}
+                  >
                     <FaPhoneAlt />
                   </div>
                 </div>

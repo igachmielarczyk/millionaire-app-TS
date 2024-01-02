@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import stopTimerSubject from "../rxjs/stopTimerSubject";
 import { halfStore, phoneStore } from "../store/wheel.store";
+import { useSoundStore } from '../store/sound.store';
 
 interface Props {
   allQuestion: Question[];
@@ -10,9 +11,10 @@ interface Props {
   wrongAnswer: any;
   correctAnswer: any;
   letsPlay: any;
+  stopLetsPlay: any;
+  stopCorrectAnswer: any;
+  stopWrongAnswer:any;
   showHalfAnswers: boolean;
-  // kola ratunkowe
-  // handleWheelHalf: (question: Question, correctAnswer: string, incorrectAnswers: string[]) => void;
 }
 
 type Question = {
@@ -39,11 +41,14 @@ const Trivia = ({
   wrongAnswer,
   correctAnswer,
   letsPlay,
+  stopLetsPlay,
+  stopCorrectAnswer,
+  stopWrongAnswer
 }: Props) => {
   const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
   const [selectedAnswer, setSelectedAnswer] = useState<Answer | null>(null);
   const [className, setClassName] = useState("answer");
-
+ 
   useEffect(() => {
     letsPlay();
   }, [letsPlay]);
@@ -88,7 +93,6 @@ const Trivia = ({
       setSelectedAnswer(answer);
       setClassName("answer active");
       stopTimerSubject.next();
-      // dlaczego tutaj uzywam funkcji strzalkowej po duration
       delay(3000, () => {
         setClassName(answer.isCorrect ? "answer correct" : "answer wrong");
       });
@@ -109,26 +113,26 @@ const Trivia = ({
       });
     }
 
-      if (showHalf) {
-        const timerHalf = setTimeout(() => {
-          toggleHalf();
-        }, 6000);
-        return () => clearTimeout(timerHalf);
-      }
-      if (showPhone) {
-        const timerPhone = setTimeout(() => {
-          togglePhone();
-        }, 6000);
-        return () => clearTimeout(timerPhone);
-      }
-
+    if (showHalf) {
+      const timerHalf = setTimeout(() => {
+        toggleHalf();
+      }, 6000);
+      return () => clearTimeout(timerHalf);
+    }
+    if (showPhone) {
+      const timerPhone = setTimeout(() => {
+        togglePhone();
+      }, 6000);
+      return () => clearTimeout(timerPhone);
+    }
   };
 
-  const { showHalf,toggleHalf } = halfStore();
-  const {showPhone, togglePhone} = phoneStore()
+  const { showHalf, toggleHalf } = halfStore();
+  const { showPhone, togglePhone } = phoneStore();
+
 
   const [answersToShow, setAnswersToShow] = useState<Answer[]>([]);
-  
+
   useEffect(() => {
     if (currentQuestion && showHalf) {
       const { correct_answer, incorrect_answers } = currentQuestion;
@@ -139,12 +143,27 @@ const Trivia = ({
       const selectedIncorrectAnswer = incorrect_answers[randomIncorrectIndex];
 
       const newAnswersToShow: Answer[] = [
-        { answer: correct_answer, isCorrect: true, className: "correct-answer" },
-        { answer: selectedIncorrectAnswer, isCorrect: false, className: "" }
+        {
+          answer: correct_answer,
+          isCorrect: true,
+          className: "correct-answer",
+        },
+        { answer: selectedIncorrectAnswer, isCorrect: false, className: "" },
       ];
       setAnswersToShow(newAnswersToShow);
     }
   }, [currentQuestion, showHalf]);
+
+// muted sound
+  const { isMuted, toggleMute } = useSoundStore();
+
+  useEffect(() => {
+    if (!isMuted) {
+      stopLetsPlay();
+      stopCorrectAnswer();
+      stopWrongAnswer();
+    }
+  },[letsPlay, stopLetsPlay, stopCorrectAnswer, stopWrongAnswer, isMuted,currentQuestion])
 
 
   return (
@@ -152,55 +171,16 @@ const Trivia = ({
       {currentQuestion && (
         <div className="question">{currentQuestion.question}</div>
       )}
-<div className="answers">
-  {(showHalf ? answersToShow : currentQuestion?.answers)?.map(
-    (answer, index) => (
-      <div
-        className={
-          selectedAnswer === answer
-            ? className
-            : `answer ${answer.className} ${answer.isCorrect && showPhone ? 'phone-answer' : ''}`
-        }
-        key={index}
-        onClick={(_event: React.MouseEvent<HTMLDivElement>) =>
-          handleClick(answer)
-        }
-      >
-        {answer.isCorrect ? <strong>{answer.answer}</strong> : answer.answer}
-      </div>
-    )
-  )}
-</div>
-      {/* {!showHalf ? (
-        <div className="answers">
-          {currentQuestion?.answers?.map((answer, index) => (
-            <div
-              className={
-                answersToShow === answer
-                  ? className
-                  : `answer ${answer.className}`
-              }
-              key={index}
-              onClick={(_event: React.MouseEvent<HTMLDivElement>) =>
-                handleClick(answer)
-              }
-            >
-              {answer.isCorrect ? (
-                <strong>{answer.answer}</strong>
-              ) : (
-                answer.answer
-              )}
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div className="answers">
-          {currentQuestion?.answers?.map((answer, index) => (
+      <div className="answers">
+        {(showHalf ? answersToShow : currentQuestion?.answers)?.map(
+          (answer, index) => (
             <div
               className={
                 selectedAnswer === answer
                   ? className
-                  : `answer ${answer.className}`
+                  : `answer ${answer.className} ${
+                      answer.isCorrect && showPhone ? "phone-answer" : ""
+                    }`
               }
               key={index}
               onClick={(_event: React.MouseEvent<HTMLDivElement>) =>
@@ -212,10 +192,11 @@ const Trivia = ({
               ) : (
                 answer.answer
               )}
+              {/* {answer.answer} */}
             </div>
-          ))}
-        </div>
-      )} */}
+          )
+        )}
+      </div>
     </div>
   );
 };
