@@ -15,8 +15,10 @@
   .main {
     width: 75vw;
     background: linear-gradient(to bottom, rgba(0, 0, 0, 0), #020230),
-      url("https://i.ytimg.com/vi/yQbJRGs0fy8/maxresdefault.jpg") center
-        no-repeat;
+      url("./assets/bg2.jpeg") center no-repeat;
+    // background: linear-gradient(to bottom, rgba(0, 0, 0, 0), #020230),
+    //   url("https://i.ytimg.com/vi/yQbJRGs0fy8/maxresdefault.jpg") center
+    //     no-repeat;
     background-size: cover;
     display: flex;
     flex-direction: column;
@@ -86,7 +88,7 @@
               animation: wrong 3s ease forwards;
             }
             &.phone-answer {
-              background: rgb(59, 118, 59);
+              background: rgb(96, 59, 118);
             }
           }
         }
@@ -98,6 +100,8 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      background-color: #493470de;
+      padding: 40px;
       h1 {
         font-size: 3rem;
         margin-bottom: 20px;
@@ -137,7 +141,7 @@
         height: 50px;
         border-radius: 50%;
         cursor: pointer;
-        transition: all .3s linear;
+        transition: all 0.3s linear;
         &.disable {
           pointer-events: none;
           background-color: #ae2c2c;
@@ -284,16 +288,16 @@
     border-radius: 10px;
   }
 
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	h1 {
-		font-size: 3rem;
-	}
-	h2 {
-		font-size: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  h1 {
+    font-size: 3rem;
+  }
+  h2 {
+    font-size: 2rem;
     white-space: nowrap;
-	}
+  }
 }
 
 //Variables - dla media query
@@ -318,6 +322,39 @@ $x2: 1720px;
           }
         }
       }
+    }
+    .moneyList {
+      padding: 20px 40px;
+      .moneyListItem {
+        margin-bottom: 5px;
+        font-size: 15px;
+        .moneyListItemAmount {
+          font-size: 0.75remrem;
+        }
+        .moneyListItemNumber {
+          font-size: 0.875rem;
+        }
+      }
+      h2 {
+        margin-bottom: 25px;
+        font-size: 1.125rem;
+      }
+    }
+    .pyramid {
+      width: 30vw;
+      .lifebuoys {
+        .wheel {
+          width: 70px;
+          height: 40px;
+          font-size: 15px;
+        }
+      }
+    }
+  }
+
+  .moneyList {
+    h2 {
+      font-size: 20px;
     }
   }
 }
@@ -393,6 +430,7 @@ $x2: 1720px;
         }
       }
       .loss {
+        padding: 10px;
         h1 {
           font-size: 2rem;
         }
