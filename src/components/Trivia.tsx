@@ -4,7 +4,7 @@ import { halfStore, phoneStore } from "../store/wheel.store";
 import { useSoundStore } from "../store/sound.store";
 
 interface Props {
-  allQuestion: Question[];
+  allQuestion: Question[] | null;
   setStop: (value: boolean) => void;
   setQuestionNumber: (value: number) => void;
   questionNumber: number;
@@ -48,6 +48,7 @@ const Trivia = ({
   const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
   const [selectedAnswer, setSelectedAnswer] = useState<Answer | null>(null);
   const [className, setClassName] = useState("answer");
+
 
   useEffect(() => {
     if (!isMuted) {
@@ -109,7 +110,7 @@ const Trivia = ({
           }
 
           delay(1000, () => {
-            setQuestionNumber((prev: number) => prev + 1);
+            setQuestionNumber(questionNumber + 1);
             setSelectedAnswer(null);
           });
         } else {
@@ -205,11 +206,6 @@ const Trivia = ({
                 handleClick(answer)
               }
             >
-              {/* {answer.isCorrect ? (
-                <strong>{answer.answer}</strong>
-              ) : (
-                answer.answer
-              )} */}
               {answer.answer}
             </div>
           )

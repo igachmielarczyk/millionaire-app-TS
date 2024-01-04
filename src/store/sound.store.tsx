@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import useSound from "use-sound";
 
 export interface SoundState {
   isMuted: boolean;

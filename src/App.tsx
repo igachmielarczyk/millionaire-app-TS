@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { moneyPyramid } from "./dataPyramid";
 import useFetchData from "./api";
 import { halfStore, phoneStore } from "./store/wheel.store";
-import { useSoundStore, SoundState } from "./store/sound.store";
+import { useSoundStore} from "./store/sound.store";
 
 import useSound from "use-sound";
 import play from "./assets/sounds/play.mp3";
@@ -18,15 +18,6 @@ import Timer from "./components/Timer";
 import { GoUnmute } from "react-icons/go";
 import { IoVolumeMuteOutline } from "react-icons/io5";
 import { FaPhoneAlt } from "react-icons/fa";
-
-type Questions = {
-  category: string;
-  type: string;
-  difficulty: string;
-  question: string;
-  correct_answer: string;
-  incorrect_answers: string[];
-}[];
 
 const App = () => {
   const [username, setUsername] = useState<string | null>(null);
@@ -49,14 +40,18 @@ const App = () => {
   const { allQuestion } = useFetchData(stop);
 
   useEffect(() => {
-    questionNumber > 1 &&
-      setEarned(moneyPyramid.find((m) => m.id === questionNumber - 1).amount);
+    const foundAmount = moneyPyramid.find((m) => m.id === questionNumber - 1);
+    if (foundAmount) {
+      setEarned(foundAmount.amount);
+    }
   }, [moneyPyramid, questionNumber]);
 
   // add name
-  const inputRef = useRef<string | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
   const handleClickInput = () => {
-    inputRef.current.value && setUsername(inputRef.current.value);
+    if (inputRef.current && inputRef.current.value) {
+      setUsername(inputRef.current.value);
+    }
   };
 
   // play Again
@@ -64,7 +59,7 @@ const App = () => {
   const handleClickStartAgain = () => {
     setQuestionNumber(1);
     setStop(false);
-    allQuestion<Questions[]>;
+    allQuestion;
     setEarned("$ 0");
     halfStore.getState().showHalf = false;
     phoneStore.getState().showPhone = false;
@@ -141,6 +136,7 @@ const App = () => {
                           stopLetsPlay={stopLetsPlay}
                           stopCorrectAnswer={stopCorrectAnswer}
                           stopWrongAnswer={stopWrongAnswer}
+                          showHalfAnswers={showHalfAnswers}
                         />
                       )}
                     </div>
