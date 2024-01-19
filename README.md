@@ -52,7 +52,6 @@ The Millionaire game is implemented using React.js and leverages RxJS and Zustan
 - `/public` - public files
 
 ## Author
-
 igachmielarczyk
 
 
